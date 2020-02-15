@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: url.shortener
+---
+testFramework: kotlintest
+sourceLanguage: kotlin
