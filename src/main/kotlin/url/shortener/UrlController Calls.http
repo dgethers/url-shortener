@@ -1,0 +1,9 @@
+POST http://localhost:8080/
+Content-Type: application/json
+
+{
+  "id" : "",
+  "url": "https:ign.com"
+}
+
+###

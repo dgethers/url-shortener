@@ -1,3 +1,11 @@
 micronaut:
   application:
     name: url-shortener
+
+jackson:
+  serialization:
+    indentOutput: true
+    writeDatesAsTimestamps: false
+#  deserialization:
+#    useBigIntegerForInts: true
+#    failOnUnknownProperties: false
