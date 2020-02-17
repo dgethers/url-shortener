@@ -4,38 +4,34 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.*
+import url.shortener.domain.UrlMapRepository
 import java.net.URI
 import java.net.URL
+import java.util.*
 import kotlin.random.Random
 
 @Controller("/")
-class UrlController {
+open class UrlController(private val urlMapRepository: UrlMapRepository) {
 
     @Get("/{urlId}")
     fun redirectToUrl(@PathVariable urlId: String): MutableHttpResponse<URL>? {
-        if (urlMapping.containsKey(urlId)) {
-            val url = URI(urlMapping[urlId]!!)
-            return HttpResponse.redirect<URL>(url)
+        val result: Optional<url.shortener.domain.UrlMap> = urlMapRepository.findById(urlId)
+        return if (result.isPresent) {
+            val url = URI(result.get().url!!)
+            HttpResponse.redirect<URL>(url)
         } else {
-            return HttpResponse.notFound()
+            HttpResponse.notFound()
         }
     }
 
     @Post
     @Status(HttpStatus.CREATED)
-    fun addUrlMapping(@Body urlMap: url.shortener.UrlMap): url.shortener.UrlMap {
+    fun addUrlMapping(@Body urlMap: url.shortener.UrlMap): String {
         val id = generateSemiUniqueId()
-        val entry = UrlMap(id, urlMap.url)
-        urlMapping[id] = entry.url
+        val entry = url.shortener.domain.UrlMap(id, urlMap.url)
+        urlMapRepository.save(entry)
 
-        return entry
-    }
-
-    companion object UrlMap {
-        val urlMapping = mutableMapOf(
-                "ab3950a" to "https://democracynow.org",
-                "dm40s9m" to "http://mangaowl.com/"
-        )
+        return id
     }
 }
 
