@@ -4,6 +4,7 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.*
+import url.shortener.domain.UrlMap
 import url.shortener.domain.UrlMapRepository
 import java.net.URI
 import java.net.URL
@@ -15,7 +16,7 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
 
     @Get("/{urlId}")
     fun redirectToUrl(@PathVariable urlId: String): MutableHttpResponse<URL>? {
-        val result: Optional<url.shortener.domain.UrlMap> = urlMapRepository.findById(urlId)
+        val result: Optional<UrlMap> = urlMapRepository.findById(urlId)
         return if (result.isPresent) {
             val url = URI(result.get().url!!)
             HttpResponse.redirect<URL>(url)
@@ -26,16 +27,16 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
 
     @Post
     @Status(HttpStatus.CREATED)
-    fun addUrlMapping(@Body urlMap: url.shortener.UrlMap): String {
+    fun addUrlMapping(@Body urlRequest: UrlRequest): String {
         val id = generateSemiUniqueId()
-        val entry = url.shortener.domain.UrlMap(id, urlMap.url)
+        val entry = UrlMap(id, urlRequest.url)
         urlMapRepository.save(entry)
 
         return id
     }
 }
 
-data class UrlMap(val id: String, val url: String)
+data class UrlRequest(val url: String)
 
 fun generateSemiUniqueId(): String {
     val charPool: List<Char> = ('a'..'z') + ('0'..'9')
