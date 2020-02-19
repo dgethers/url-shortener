@@ -34,23 +34,29 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
 
             return result.get()
         } else {
-            val id = generateSemiUniqueId()
+            val id = UrlRequest.generateSemiUniqueId()
             val entry = UrlMap(id, urlRequest.url, urlRequest.userId)
             urlMapRepository.save(entry)
 
             return entry
         }
     }
+
+
 }
 
-data class UrlRequest(val url: String, val userId: String)
+data class UrlRequest(val url: String, val userId: String) {
 
-fun generateSemiUniqueId(): String {
-    val charPool: List<Char> = ('a'..'z') + ('0'..'9')
-    val randomString = (1..8)
-            .map { _ -> Random.nextInt(0, charPool.size) }
-            .map(charPool::get)
-            .joinToString("");
+    companion object {
+        val charPool: List<Char> = ('a'..'z') + ('0'..'9')
 
-    return randomString
+        fun generateSemiUniqueId(): String {
+            val randomString = (1..8)
+                    .map { _ -> Random.nextInt(0, charPool.size) }
+                    .map(charPool::get)
+                    .joinToString("");
+
+            return randomString
+        }
+    }
 }
