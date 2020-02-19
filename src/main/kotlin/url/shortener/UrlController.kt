@@ -28,11 +28,18 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
     @Post
     @Status(HttpStatus.CREATED)
     fun addUrlMapping(@Body urlRequest: UrlRequest): UrlMap {
-        val id = generateSemiUniqueId()
-        val entry = UrlMap(id, urlRequest.url, urlRequest.userId)
-        urlMapRepository.save(entry)
+        val result = urlMapRepository.findByUrl(urlRequest.url)
 
-        return entry
+        if (result.isPresent) {
+
+            return result.get()
+        } else {
+            val id = generateSemiUniqueId()
+            val entry = UrlMap(id, urlRequest.url, urlRequest.userId)
+            urlMapRepository.save(entry)
+
+            return entry
+        }
     }
 }
 
