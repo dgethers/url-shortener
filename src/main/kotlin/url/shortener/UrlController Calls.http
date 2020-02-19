@@ -2,7 +2,8 @@ POST http://localhost:8080/
 Content-Type: application/json
 
 {
-  "url": "https:www.cnnmoney.com"
+  "url": "https:www.cnnmoney.com",
+  "userId" : "outzider"
 }
 
 ###

@@ -27,16 +27,16 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
 
     @Post
     @Status(HttpStatus.CREATED)
-    fun addUrlMapping(@Body urlRequest: UrlRequest): String {
+    fun addUrlMapping(@Body urlRequest: UrlRequest): UrlMap {
         val id = generateSemiUniqueId()
-        val entry = UrlMap(id, urlRequest.url)
+        val entry = UrlMap(id, urlRequest.url, urlRequest.userId)
         urlMapRepository.save(entry)
 
-        return id
+        return entry
     }
 }
 
-data class UrlRequest(val url: String)
+data class UrlRequest(val url: String, val userId: String)
 
 fun generateSemiUniqueId(): String {
     val charPool: List<Char> = ('a'..'z') + ('0'..'9')
