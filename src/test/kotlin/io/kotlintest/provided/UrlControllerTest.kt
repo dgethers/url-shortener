@@ -11,7 +11,7 @@ import io.micronaut.runtime.server.EmbeddedServer
 
 class UrlControllerTest : StringSpec() {
 
-    val embeddedServer = autoClose(
+    private val embeddedServer = autoClose(
             ApplicationContext.run(EmbeddedServer::class.java)
     )
 

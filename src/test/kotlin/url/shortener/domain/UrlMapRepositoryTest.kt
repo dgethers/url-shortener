@@ -7,7 +7,7 @@ import io.micronaut.runtime.server.EmbeddedServer
 
 class UrlMapRepositoryTest : StringSpec() {
 
-    val embeddedServer = autoClose(
+    private val embeddedServer = autoClose(
             ApplicationContext.run(EmbeddedServer::class.java)
     )
 
