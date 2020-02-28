@@ -1,18 +1,15 @@
 package io.kotlintest.provided
 
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 import io.micronaut.context.ApplicationContext
-import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.runtime.server.EmbeddedServer
-import java.net.URL
 
-class UrlControllerTest: StringSpec() {
+class UrlControllerTest : StringSpec() {
 
     val embeddedServer = autoClose(
             ApplicationContext.run(EmbeddedServer::class.java)
