@@ -48,7 +48,7 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
 data class UrlRequest(val url: String, val userId: String) {
 
     companion object {
-        val charPool: List<Char> = ('a'..'z') + ('0'..'9')
+        private val charPool: List<Char> = ('a'..'z') + ('0'..'9')
 
         fun generateSemiUniqueId(): String {
             val randomString = (1..8)
