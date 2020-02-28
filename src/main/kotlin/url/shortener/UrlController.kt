@@ -30,15 +30,15 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
     fun addUrlMapping(@Body urlRequest: UrlRequest): UrlMap {
         val result = urlMapRepository.findByUrl(urlRequest.url)
 
-        if (result.isPresent) {
+        return if (result.isPresent) {
 
-            return result.get()
+            result.get()
         } else {
             val id = UrlRequest.generateSemiUniqueId()
             val entry = UrlMap(id, urlRequest.url, urlRequest.userId)
             urlMapRepository.save(entry)
 
-            return entry
+            entry
         }
     }
 
