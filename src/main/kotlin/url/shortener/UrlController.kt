@@ -18,7 +18,12 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
     fun redirectToUrl(@PathVariable urlId: String): MutableHttpResponse<URL>? {
         val result: Optional<UrlMap> = urlMapRepository.findById(urlId)
         return if (result.isPresent) {
-            val url = URI(result.get().url!!)
+
+            val record: UrlMap = result.get()
+
+            val url = URI(record.url!!)
+            record.visits += 1
+            urlMapRepository.update(record)
             HttpResponse.redirect<URL>(url)
         } else {
             HttpResponse.notFound()

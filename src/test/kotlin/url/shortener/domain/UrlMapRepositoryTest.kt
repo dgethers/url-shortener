@@ -1,5 +1,6 @@
 package url.shortener.domain
 
+import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.micronaut.context.ApplicationContext
@@ -27,6 +28,14 @@ class UrlMapRepositoryTest : StringSpec() {
         "should find by url when present" {
             val actual = urlMapRepository.findByUrl("https://democracynow.org")
             actual.isPresent shouldBe true
+        }
+
+        "should update visit count by 1" {
+            val recordToBeUpdated = urlMapRepository.findById("ab3950a").get()
+            recordToBeUpdated.visits += 1
+            urlMapRepository.update(recordToBeUpdated)
+            val actualVisits = urlMapRepository.findById("ab3950a").get().visits
+            actualVisits shouldBeGreaterThan 0
         }
     }
 

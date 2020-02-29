@@ -6,4 +6,5 @@ import javax.persistence.Id
 @Entity
 data class UrlMap(@Id var id: String? = null,
                   var url: String? = null,
-                  var userId: String? = null)
+                  var userId: String? = null,
+                  var visits: Int = 0)
