@@ -15,10 +15,7 @@ class UrlMapRepositoryTest : StringSpec() {
 
     init {
         "should find url inserted" {
-            val foo = UrlMap("abc", "https://www.democracynow.org", "sailor_moon")
-            urlMapRepository.save(foo)
-
-            val actual = urlMapRepository.findById("abc")
+            val actual = urlMapRepository.findById("ab3950a")
             actual.isPresent shouldBe true
         }
 
@@ -28,7 +25,7 @@ class UrlMapRepositoryTest : StringSpec() {
         }
 
         "should find by url when present" {
-            val actual = urlMapRepository.findByUrl("https://www.democracynow.org")
+            val actual = urlMapRepository.findByUrl("https://democracynow.org")
             actual.isPresent shouldBe true
         }
     }
