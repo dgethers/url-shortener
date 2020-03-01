@@ -14,18 +14,33 @@ import kotlin.random.Random
 @Controller("/")
 open class UrlController(private val urlMapRepository: UrlMapRepository) {
 
-    @Get("/{urlId}")
+    @Get("{urlId}")
     fun redirectToUrl(@PathVariable urlId: String): MutableHttpResponse<URL>? {
         val result: Optional<UrlMap> = urlMapRepository.findById(urlId)
+
         return if (result.isPresent) {
 
             val record: UrlMap = result.get()
-
             val url = URI(record.url!!)
-            record.visits += 1
+            record.visits = record.visits + 1
             urlMapRepository.update(record)
+
             HttpResponse.redirect<URL>(url)
         } else {
+
+            HttpResponse.notFound()
+        }
+    }
+
+    @Get("stats/{urlId}")
+    fun getStatsForUrlById(@PathVariable urlId: String): MutableHttpResponse<UrlMap>? {
+        val result = urlMapRepository.findById(urlId)
+
+        return if (result.isPresent) {
+
+            HttpResponse.ok(result.get())
+        } else {
+
             HttpResponse.notFound()
         }
     }

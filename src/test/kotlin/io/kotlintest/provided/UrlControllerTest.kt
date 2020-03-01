@@ -4,10 +4,12 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 import io.micronaut.context.ApplicationContext
+import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.runtime.server.EmbeddedServer
+import url.shortener.domain.UrlMap
 
 class UrlControllerTest : StringSpec() {
 
@@ -27,7 +29,11 @@ class UrlControllerTest : StringSpec() {
         }
 
         "should return 302 redirect when unique id is found" {
-            //haven't figured out a way to implement this
+            //TODO: Implement test for this or get rid of it
+        }
+
+        "should return url stats by an id" {
+            //TODO: Implement test for this or get rid of it
         }
     }
 }
