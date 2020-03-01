@@ -8,10 +8,6 @@ import url.shortener.domain.UrlMap
 import url.shortener.domain.UrlMapRepository
 import javax.inject.Singleton
 
-fun main(args: Array<String>) {
-    Micronaut.run(*args)
-}
-
 @Singleton
 @TypeHint(typeNames = ["org.h2.Driver", "org.h2.mvstore.db.MVTableEngine"])
 class Application(
@@ -24,5 +20,13 @@ class Application(
                 UrlMap("dm40s9m", "http://mangaowl.com", "system")
         )
         urlMapRepository.saveAll(defaults)
+    }
+
+    companion object Main {
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            Micronaut.run(*args)
+        }
     }
 }
