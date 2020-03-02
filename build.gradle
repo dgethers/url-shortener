@@ -2,7 +2,7 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.3.50"
     id "org.jetbrains.kotlin.kapt" version "1.3.50"
     id "org.jetbrains.kotlin.plugin.allopen" version "1.3.50"
-    id "com.github.johnrengelman.shadow" version "5.2.0" //TODO: Determine if this is necessary
+    id "com.github.johnrengelman.shadow" version "5.2.0"
     id "application"
 }
 
@@ -73,6 +73,14 @@ compileTestKotlin {
 	    javaParameters = true
 	}
 }
+
+/*
+jar {
+    manifest {
+        attributes 'Main-Class' : 'url.shortener.Application'
+    }
+}
+*/
 
 shadowJar {
     mergeServiceFiles()
