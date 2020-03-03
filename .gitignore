@@ -5,6 +5,8 @@
 /build/kotlin
 /build/generated
 /build/classes
+/build/reports
+/build/test-results
 *.iml
 *.ipr
 *.iws
