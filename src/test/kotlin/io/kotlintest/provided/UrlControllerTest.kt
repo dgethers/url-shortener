@@ -8,7 +8,10 @@ import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.runtime.server.EmbeddedServer
+import io.micronaut.test.annotation.MicronautTest
+import url.shortener.domain.UrlMap
 
+@MicronautTest
 class UrlControllerTest : StringSpec() {
 
     private val embeddedServer = autoClose(
@@ -31,7 +34,12 @@ class UrlControllerTest : StringSpec() {
         }
 
         "should return url stats by an id" {
-            //TODO: Implement test for this or get rid of it
+            val actual = client.toBlocking().retrieve("/stats/ab3950a", UrlMap::class.java)
+
+            actual.id shouldBe "ab3950a"
+            actual.url shouldBe "https://democracynow.org"
+            actual.userId shouldBe "system"
+            actual.visits shouldBe 0
         }
     }
 }
