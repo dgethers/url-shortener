@@ -1,14 +1,14 @@
 micronaut:
   application:
     name: url-shortener
+  http:
+    client:
+      followRedirects: false
 
 jackson:
   serialization:
     indentOutput: true
     writeDatesAsTimestamps: false
-#  deserialization:
-#    useBigIntegerForInts: true
-#    failOnUnknownProperties: false
 
 datasources:
   default:

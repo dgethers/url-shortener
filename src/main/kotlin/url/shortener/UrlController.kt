@@ -25,7 +25,8 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
             record.visits = record.visits + 1
             urlMapRepository.update(record)
 
-            HttpResponse.redirect<URL>(url)
+
+            HttpResponse.permanentRedirect(url)
         } else {
 
             HttpResponse.notFound()

@@ -4,6 +4,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 import io.micronaut.context.ApplicationContext
+import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.exceptions.HttpClientResponseException
@@ -29,8 +30,10 @@ class UrlControllerTest : StringSpec() {
             e.status shouldBe HttpStatus.NOT_FOUND
         }
 
-        "should return 302 redirect when unique id is found" {
-            //TODO: Implement test for this or get rid of it
+        "should return 308 permanent redirect when unique id is found" {
+            val response = client.toBlocking().exchange<HttpResponse<HttpStatus>>("/ab3950a")
+
+            response.status shouldBe HttpStatus.PERMANENT_REDIRECT
         }
 
         "should return url stats by an id" {
@@ -39,7 +42,6 @@ class UrlControllerTest : StringSpec() {
             actual.id shouldBe "ab3950a"
             actual.url shouldBe "https://democracynow.org"
             actual.userId shouldBe "system"
-            actual.visits shouldBe 0
         }
     }
 }
