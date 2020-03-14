@@ -16,29 +16,20 @@ class UrlMapRepositoryTest : StringSpec() {
 
     init {
         "should find url inserted" {
-            val actual = urlMapRepository.findById("ab3950a")
+            val actual = urlMapRepository.findByUrlCode("ab3950a")
             actual.isPresent shouldBe true
         }
 
         "should not find url that has not been inserted" {
-            val actual = urlMapRepository.findById("does_not_exist")
+            val actual = urlMapRepository.findByUrlCode("does_not_exist")
             actual.isPresent shouldBe false
         }
 
         "should find by url when present" {
-            val actual = urlMapRepository.findByUrlCode("https://democracynow.org")
+            val actual = urlMapRepository.findByFullUrl("https://democracynow.org")
             actual.isPresent shouldBe true
         }
 
-        //TODO: Update this test when table structure is ready
-/*
-        "should update visit count by 1" {
-            val recordToBeUpdated = urlMapRepository.findById("ab3950a").get()
-            urlMapRepository.update(recordToBeUpdated)
-            val actualVisits = urlMapRepository.findById("ab3950a").get().visits
-            actualVisits shouldBeGreaterThan 0
-        }
-*/
     }
 
 }

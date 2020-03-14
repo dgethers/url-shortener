@@ -33,6 +33,7 @@ class UrlControllerTest : StringSpec() {
         "should return 308 permanent redirect when unique id is found" {
             val response = client.toBlocking().exchange<HttpResponse<HttpStatus>>("/ab3950a")
 
+            //TODO: check the redirecting url
             response.status shouldBe HttpStatus.PERMANENT_REDIRECT
         }
 

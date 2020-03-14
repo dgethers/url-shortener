@@ -8,5 +8,6 @@ import java.util.*
 @JdbcRepository(dialect = Dialect.H2)
 interface UrlMapRepository : CrudRepository<UrlMap, String> {
 
-    fun findByUrlCode(url: String): Optional<UrlMap>
+    fun findByUrlCode(urlCode: String): Optional<UrlMap>
+    fun findByFullUrl(fullUrl: String): Optional<UrlMap>
 }

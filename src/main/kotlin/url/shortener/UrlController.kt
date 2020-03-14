@@ -21,7 +21,7 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
         return if (result.isPresent) {
 
             val record: UrlMap = result.get()
-            val url = URI(record.urlCode)
+            val url = URI(record.fullUrl)
 
             HttpResponse.permanentRedirect(url)
         } else {
@@ -46,14 +46,14 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
     @Post
     @Status(HttpStatus.CREATED)
     fun addUrlMapping(@Body urlRequest: UrlRequest): UrlMap {
-        val result = urlMapRepository.findByUrlCode(urlRequest.url)
+        val result = urlMapRepository.findByUrlCode(urlRequest.urlCode)
 
         return if (result.isPresent) {
 
             result.get()
         } else {
             val id = UrlRequest.generateSemiUniqueId() //TODO: Rename
-            val entry = UrlMap(urlCode = id, fullUrl = urlRequest.url, userId = urlRequest.userId, id = null)
+            val entry = UrlMap(urlCode = id, fullUrl = urlRequest.urlCode, userId = urlRequest.userId, id = null)
             urlMapRepository.save(entry)
 
             entry
@@ -63,8 +63,7 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
 
 }
 
-//TODO: Rename member attributes
-data class UrlRequest(val url: String, val userId: String) {
+data class UrlRequest(val urlCode: String, val userId: String) {
 
     companion object {
         private val charPool: List<Char> = ('a'..'z') + ('0'..'9')
