@@ -14,17 +14,14 @@ import kotlin.random.Random
 @Controller("/")
 open class UrlController(private val urlMapRepository: UrlMapRepository) {
 
-    @Get("{urlId}")
-    fun redirectToUrl(@PathVariable urlId: String): MutableHttpResponse<URL>? {
-        val result: Optional<UrlMap> = urlMapRepository.findById(urlId)
+    @Get("{urlCode}")
+    fun redirectToUrl(@PathVariable urlCode: String): MutableHttpResponse<URL>? {
+        val result: Optional<UrlMap> = urlMapRepository.findByUrlCode(urlCode)
 
         return if (result.isPresent) {
 
             val record: UrlMap = result.get()
-            val url = URI(record.url!!)
-            record.visits = record.visits + 1
-            urlMapRepository.update(record)
-
+            val url = URI(record.urlCode)
 
             HttpResponse.permanentRedirect(url)
         } else {
@@ -33,9 +30,9 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
         }
     }
 
-    @Get("stats/{urlId}")
-    fun getStatsForUrlById(@PathVariable urlId: String): MutableHttpResponse<UrlMap>? {
-        val result = urlMapRepository.findById(urlId)
+    @Get("stats/{urlCode}")
+    fun getStatsForUrlByCode(@PathVariable urlCode: String): MutableHttpResponse<UrlMap>? {
+        val result = urlMapRepository.findByUrlCode(urlCode)
 
         return if (result.isPresent) {
 
@@ -49,14 +46,14 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
     @Post
     @Status(HttpStatus.CREATED)
     fun addUrlMapping(@Body urlRequest: UrlRequest): UrlMap {
-        val result = urlMapRepository.findByUrl(urlRequest.url)
+        val result = urlMapRepository.findByUrlCode(urlRequest.url)
 
         return if (result.isPresent) {
 
             result.get()
         } else {
-            val id = UrlRequest.generateSemiUniqueId()
-            val entry = UrlMap(id, urlRequest.url, urlRequest.userId)
+            val id = UrlRequest.generateSemiUniqueId() //TODO: Rename
+            val entry = UrlMap(urlCode = id, fullUrl = urlRequest.url, userId = urlRequest.userId, id = null)
             urlMapRepository.save(entry)
 
             entry
@@ -66,6 +63,7 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
 
 }
 
+//TODO: Rename member attributes
 data class UrlRequest(val url: String, val userId: String) {
 
     companion object {

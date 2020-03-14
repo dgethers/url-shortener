@@ -39,8 +39,8 @@ class UrlControllerTest : StringSpec() {
         "should return url stats by an id" {
             val actual = client.toBlocking().retrieve("/stats/ab3950a", UrlMap::class.java)
 
-            actual.id shouldBe "ab3950a"
-            actual.url shouldBe "https://democracynow.org"
+            actual.urlCode shouldBe "ab3950a"
+            actual.fullUrl shouldBe "https://democracynow.org"
             actual.userId shouldBe "system"
         }
     }
