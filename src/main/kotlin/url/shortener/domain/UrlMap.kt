@@ -1,6 +1,7 @@
 package url.shortener.domain
 
 import io.micronaut.data.annotation.DateCreated
+import io.micronaut.data.annotation.Relation
 import java.time.Instant
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -15,7 +16,8 @@ FULL_URL|VARCHAR
 USER_ID|VARCHAR
 
 Visits
-ID|INT, FOREIGN KEY
+ID|INT,
+URL_CODE|VARCHAR, FOREIGN KEY
 CLIENT_BROWSER| VARCHAR
 IP_ADDRESS| VARCHAR
 VISIT_DATETIME| DATETIME
@@ -26,4 +28,12 @@ data class UrlMap(@Id @GeneratedValue var id: Long = 0,
                   val urlCode: String,
                   val fullUrl: String,
                   val userId: String,
-                  @DateCreated var createDtm: Instant = Instant.EPOCH)
+                  @DateCreated var createDtm: Instant = Instant.EPOCH,
+                  @Relation(value = Relation.Kind.ONE_TO_MANY, mappedBy = "visit") var visits: Set<Visit>? = emptySet())
+
+@Entity
+data class Visit(@Id @GeneratedValue var id: Long = 0,
+                 val clientBrowser: String,
+                 val ipAddress: String,
+                 val urlCode: String,
+                 @DateCreated var createDtm: Instant = Instant.EPOCH)

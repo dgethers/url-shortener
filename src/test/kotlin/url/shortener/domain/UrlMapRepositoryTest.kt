@@ -1,6 +1,5 @@
 package url.shortener.domain
 
-import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.micronaut.context.ApplicationContext
@@ -29,7 +28,6 @@ class UrlMapRepositoryTest : StringSpec() {
             val actual = urlMapRepository.findByFullUrl("https://democracynow.org")
             actual.isPresent shouldBe true
         }
-
     }
 
 }
