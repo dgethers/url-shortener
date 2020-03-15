@@ -28,7 +28,7 @@ class VisitRepositoryTest : StringSpec() {
             actual shouldContainExactlyInAnyOrder uniqueVisits
         }
 
-        "should return an empty set when url code is not found" {
+        "should return an empty set when url code does not exist" {
             val actual = visitRepository.findByUrlCode("none")
 
             actual.size shouldBe 0

@@ -28,6 +28,13 @@ class UrlMapRepositoryTest : StringSpec() {
             val actual = urlMapRepository.findByFullUrl("https://democracynow.org")
             actual.isPresent shouldBe true
         }
+
+        "should get full url by urlcode" {
+            val actual = urlMapRepository.findFullUrlByUrlCode("ab3950a")
+
+            actual.isPresent shouldBe true
+            actual.get() shouldBe "https://democracynow.org"
+        }
     }
 
 }

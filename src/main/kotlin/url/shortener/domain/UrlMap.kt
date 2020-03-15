@@ -28,8 +28,7 @@ data class UrlMap(@Id @GeneratedValue var id: Long = 0,
                   val urlCode: String,
                   val fullUrl: String,
                   val userId: String,
-                  @DateCreated var createDtm: Instant = Instant.EPOCH,
-                  @Relation(value = Relation.Kind.ONE_TO_MANY, mappedBy = "visit") var visits: Set<Visit>? = emptySet())
+                  @DateCreated var createDtm: Instant = Instant.EPOCH)
 
 @Entity
 data class Visit(@Id @GeneratedValue var id: Long = 0,
