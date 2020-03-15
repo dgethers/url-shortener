@@ -22,6 +22,6 @@ VISIT_DATETIME| DATETIME
 
 @Entity
 data class UrlMap(@Id @GeneratedValue var id: Long?,
-                  var urlCode: String,
-                  var fullUrl: String,
-                  var userId: String)
+                  val urlCode: String,
+                  val fullUrl: String,
+                  val userId: String)
