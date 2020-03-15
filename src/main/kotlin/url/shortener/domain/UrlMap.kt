@@ -1,6 +1,7 @@
 package url.shortener.domain
 
-import io.micronaut.data.annotation.MappedEntity
+import io.micronaut.data.annotation.DateCreated
+import java.time.Instant
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
@@ -21,7 +22,8 @@ VISIT_DATETIME| DATETIME
  */
 
 @Entity
-data class UrlMap(@Id @GeneratedValue var id: Long?,
+data class UrlMap(@Id @GeneratedValue var id: Long = 0,
                   val urlCode: String,
                   val fullUrl: String,
-                  val userId: String)
+                  val userId: String,
+                  @DateCreated var createDtm: Instant = Instant.EPOCH)

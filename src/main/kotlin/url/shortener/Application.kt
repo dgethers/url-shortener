@@ -16,8 +16,8 @@ class Application(
     @EventListener
     fun init(event: StartupEvent) {
         val defaults = listOf(
-                UrlMap(null, "ab3950a", "https://democracynow.org", "system"),
-                UrlMap(null, "dm40s9m", "http://mangaowl.com", "system")
+                UrlMap(urlCode = "ab3950a", fullUrl = "https://democracynow.org", userId =  "system"),
+                UrlMap(urlCode = "dm40s9m", fullUrl = "http://mangaowl.com", userId = "system")
         )
         urlMapRepository.saveAll(defaults)
     }

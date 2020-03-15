@@ -53,7 +53,7 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
             result.get()
         } else {
             val id = UrlRequest.generateSemiUniqueId() //TODO: Rename
-            val entry = UrlMap(urlCode = id, fullUrl = urlRequest.urlCode, userId = urlRequest.userId, id = null)
+            val entry = UrlMap(urlCode = id, fullUrl = urlRequest.urlCode, userId = urlRequest.userId)
             urlMapRepository.save(entry)
 
             entry
