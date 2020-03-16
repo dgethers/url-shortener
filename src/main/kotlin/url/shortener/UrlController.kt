@@ -6,24 +6,29 @@ import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.*
 import url.shortener.domain.UrlMap
 import url.shortener.domain.UrlMapRepository
+import url.shortener.domain.Visit
+import url.shortener.domain.VisitRepository
 import java.net.URI
 import java.net.URL
-import java.util.*
 import kotlin.random.Random
 
 @Controller("/")
-open class UrlController(private val urlMapRepository: UrlMapRepository) {
+open class UrlController(private val urlMapRepository: UrlMapRepository,
+                         private val visitRepository: VisitRepository) {
 
     @Get("{urlCode}")
-    fun redirectToUrl(@PathVariable urlCode: String): MutableHttpResponse<URL>? {
-        val result: Optional<UrlMap> = urlMapRepository.findByUrlCode(urlCode)
+    fun redirectToUrl(@Header("X-Forwarded-For") clientIpAddress: String?,
+                      @Header("User-Agent") clientUserAgent: String?,
+                      @PathVariable urlCode: String): MutableHttpResponse<URL>? {
 
-        return if (result.isPresent) {
+        val possibleFullUrl = urlMapRepository.findFullUrlByUrlCode(urlCode)
 
-            val record: UrlMap = result.get()
-            val url = URI(record.fullUrl)
+        return if (possibleFullUrl.isPresent) {
 
-            HttpResponse.permanentRedirect(url)
+            val fullUrl = possibleFullUrl.get()
+            //TODO: Give default value of undefined
+            visitRepository.save(Visit(clientBrowser = clientUserAgent.orEmpty(), ipAddress = clientIpAddress.orEmpty(), urlCode = urlCode))
+            HttpResponse.permanentRedirect(URI(fullUrl))
         } else {
 
             HttpResponse.notFound()
@@ -31,12 +36,14 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
     }
 
     @Get("stats/{urlCode}")
-    fun getStatsForUrlByCode(@PathVariable urlCode: String): MutableHttpResponse<UrlMap>? {
-        val result = urlMapRepository.findByUrlCode(urlCode)
+    fun getStatsForUrlCode(@PathVariable urlCode: String): MutableHttpResponse<UrlStatResponse>? {
+        val possibleUrlMap = urlMapRepository.findByUrlCode(urlCode)
 
-        return if (result.isPresent) {
+        return if (possibleUrlMap.isPresent) {
 
-            HttpResponse.ok(result.get())
+            val urlMap = possibleUrlMap.get()
+            val visits = visitRepository.findByUrlCode(urlCode)
+            HttpResponse.ok(UrlStatResponse(urlMap, visits))
         } else {
 
             HttpResponse.notFound()
@@ -62,6 +69,8 @@ open class UrlController(private val urlMapRepository: UrlMapRepository) {
 
 
 }
+
+data class UrlStatResponse(val urlMap: UrlMap, val visits: Set<Visit>)
 
 data class UrlRequest(val urlCode: String, val userId: String) {
 
