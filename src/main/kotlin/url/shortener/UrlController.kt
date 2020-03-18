@@ -1,9 +1,12 @@
 package url.shortener
 
+import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.*
+import io.micronaut.http.server.HttpServerConfiguration
+import io.micronaut.http.server.util.DefaultHttpClientAddressResolver
 import url.shortener.domain.UrlMap
 import url.shortener.domain.UrlMapRepository
 import url.shortener.domain.Visit
@@ -13,21 +16,23 @@ import java.net.URL
 import kotlin.random.Random
 
 @Controller("/")
-open class UrlController(private val urlMapRepository: UrlMapRepository,
-                         private val visitRepository: VisitRepository) {
+class UrlController(private val urlMapRepository: UrlMapRepository,
+                    private val visitRepository: VisitRepository) {
 
     @Get("{urlCode}")
-    fun redirectToUrl(@Header("X-Forwarded-For") clientIpAddress: String?,
-                      @Header("User-Agent") clientUserAgent: String?,
+    fun redirectToUrl(request: HttpRequest<*>,
                       @PathVariable urlCode: String): MutableHttpResponse<URL>? {
 
         val possibleFullUrl = urlMapRepository.findFullUrlByUrlCode(urlCode)
 
         return if (possibleFullUrl.isPresent) {
-
+            val clientAddressResolver = DefaultHttpClientAddressResolver(HttpServerConfiguration())
+            val clientUserAgent = request.headers["User-Agent"]
             val fullUrl = possibleFullUrl.get()
-            //TODO: Give default value of undefined
-            visitRepository.save(Visit(clientBrowser = clientUserAgent.orEmpty(), ipAddress = clientIpAddress.orEmpty(), urlCode = urlCode))
+
+            //TODO: Give default value besides blank?
+            visitRepository.save(Visit(clientBrowser = clientUserAgent.orEmpty(),
+                    ipAddress = clientAddressResolver.resolve(request).orEmpty(), urlCode = urlCode))
             HttpResponse.permanentRedirect(URI(fullUrl))
         } else {
 
@@ -43,7 +48,7 @@ open class UrlController(private val urlMapRepository: UrlMapRepository,
 
             val urlMap = possibleUrlMap.get()
             val visits = visitRepository.findByUrlCode(urlCode)
-            HttpResponse.ok(UrlStatResponse(urlMap, visits))
+            HttpResponse.ok(UrlStatResponse(urlMap, visits.toList()))
         } else {
 
             HttpResponse.notFound()
@@ -70,7 +75,7 @@ open class UrlController(private val urlMapRepository: UrlMapRepository,
 
 }
 
-data class UrlStatResponse(val urlMap: UrlMap, val visits: Set<Visit>)
+data class UrlStatResponse(val urlMap: UrlMap, val visits: List<Visit>?)
 
 data class UrlRequest(val urlCode: String, val userId: String) {
 

@@ -20,26 +20,24 @@ class UrlControllerTest : StringSpec() {
             ApplicationContext.run(EmbeddedServer::class.java)
     )
 
-    val client = autoClose(
+    private val client = autoClose(
             embeddedServer.applicationContext.createBean(RxHttpClient::class.java, embeddedServer.getURL())
     )
 
     init {
-        "should return 404 when unique id is not found" {
+        "should return 404 when unique url code is not found" {
             val e = shouldThrow<HttpClientResponseException> { client.toBlocking().exchange<Any>("/issues") }
 
             e.status shouldBe HttpStatus.NOT_FOUND
         }
 
-        "should return 308 permanent redirect when unique id is found" {
+        "should return 308 permanent redirect when url code is found" {
             val response = client.toBlocking().exchange<HttpResponse<HttpStatus>>("/ab3950a")
 
-            //TODO: check the redirecting url
             response.status shouldBe HttpStatus.PERMANENT_REDIRECT
+            response.header("Location") shouldBe "https://democracynow.org"
         }
 
-
-/*
         "should return url stats by an id" {
             val actual = client.toBlocking().retrieve("/stats/ab3950a", UrlStatResponse::class.java)
 
@@ -48,6 +46,5 @@ class UrlControllerTest : StringSpec() {
             actual.urlMap.fullUrl shouldBe "https://democracynow.org"
             actual.urlMap.userId shouldBe "system"
         }
-*/
     }
 }
