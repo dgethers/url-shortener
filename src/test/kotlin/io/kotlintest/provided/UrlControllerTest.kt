@@ -1,5 +1,6 @@
 package io.kotlintest.provided
 
+import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
@@ -10,8 +11,6 @@ import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.test.annotation.MicronautTest
-import url.shortener.UrlStatResponse
-import url.shortener.domain.UrlMap
 
 @MicronautTest
 class UrlControllerTest : StringSpec() {
@@ -38,6 +37,13 @@ class UrlControllerTest : StringSpec() {
             response.header("Location") shouldBe "https://democracynow.org"
         }
 
+        "should return all visits by url code" {
+            val actual = client.toBlocking().retrieve("/visits/ab3950a", Set::class.java)
+
+            actual.size shouldBeGreaterThan 2
+        }
+
+/*
         "should return url stats by an id" {
             val actual = client.toBlocking().retrieve("/stats/ab3950a", UrlStatResponse::class.java)
 
@@ -46,5 +52,6 @@ class UrlControllerTest : StringSpec() {
             actual.urlMap.fullUrl shouldBe "https://democracynow.org"
             actual.urlMap.userId shouldBe "system"
         }
+*/
     }
 }

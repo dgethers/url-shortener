@@ -40,15 +40,30 @@ class UrlController(private val urlMapRepository: UrlMapRepository,
         }
     }
 
+    @Get("visits/{urlCode}")
+    fun getVisitsByUrlCode(@PathVariable urlCode: String): MutableHttpResponse<Set<Visit>> {
+        //TODO: Determine if a small return dataset makes sense
+        val possibleUrlMap = urlMapRepository.findByUrlCode(urlCode)
+
+        return if (possibleUrlMap.isPresent) {
+
+            val visits = visitRepository.findByUrlCode(urlCode)
+            HttpResponse.ok(visits)
+        } else {
+
+            HttpResponse.notFound()
+        }
+    }
+
     @Get("stats/{urlCode}")
-    fun getStatsForUrlCode(@PathVariable urlCode: String): MutableHttpResponse<UrlStatResponse>? {
+    fun getStatsForUrlCode(@PathVariable urlCode: String): MutableHttpResponse<Set<Visit>>? {
         val possibleUrlMap = urlMapRepository.findByUrlCode(urlCode)
 
         return if (possibleUrlMap.isPresent) {
 
             val urlMap = possibleUrlMap.get()
             val visits = visitRepository.findByUrlCode(urlCode)
-            HttpResponse.ok(UrlStatResponse(urlMap, visits.toList()))
+            HttpResponse.ok(visits)
         } else {
 
             HttpResponse.notFound()
@@ -75,7 +90,7 @@ class UrlController(private val urlMapRepository: UrlMapRepository,
 
 }
 
-data class UrlStatResponse(val urlMap: UrlMap, val visits: List<Visit>?)
+//data class UrlStatResponse(val urlMap: UrlMap, val visits: List<Visit>?)
 
 data class UrlRequest(val urlCode: String, val userId: String) {
 
