@@ -1,16 +1,19 @@
 package io.kotlintest.provided
 
+import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 import io.micronaut.context.ApplicationContext
+import io.micronaut.http.HttpRequest.GET
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.test.annotation.MicronautTest
+import url.shortener.domain.Visit
 
 @MicronautTest
 class UrlControllerTest : StringSpec() {
@@ -31,7 +34,10 @@ class UrlControllerTest : StringSpec() {
         }
 
         "should return 308 permanent redirect when url code is found" {
-            val response = client.toBlocking().exchange<HttpResponse<HttpStatus>>("/ab3950a")
+            val request = GET<Any>("/ab3950a")
+            request.header("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) " +
+                    "AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1")
+            val response = client.toBlocking().exchange(request, HttpResponse::class.java)
 
             response.status shouldBe HttpStatus.PERMANENT_REDIRECT
             response.header("Location") shouldBe "https://democracynow.org"
@@ -40,18 +46,7 @@ class UrlControllerTest : StringSpec() {
         "should return all visits by url code" {
             val actual = client.toBlocking().retrieve("/visits/ab3950a", Set::class.java)
 
-            actual.size shouldBeGreaterThan 2
+            actual.size shouldBeGreaterThan 3
         }
-
-/*
-        "should return url stats by an id" {
-            val actual = client.toBlocking().retrieve("/stats/ab3950a", UrlStatResponse::class.java)
-
-            //TODO: Add check for visits
-            actual.urlMap.urlCode shouldBe "ab3950a"
-            actual.urlMap.fullUrl shouldBe "https://democracynow.org"
-            actual.urlMap.userId shouldBe "system"
-        }
-*/
     }
 }
