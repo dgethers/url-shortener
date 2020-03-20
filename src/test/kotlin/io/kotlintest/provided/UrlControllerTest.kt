@@ -1,15 +1,12 @@
 package io.kotlintest.provided
 
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 import io.micronaut.context.ApplicationContext
-import io.micronaut.http.HttpRequest.GET
-import io.micronaut.http.HttpRequest.POST
+import io.micronaut.http.HttpRequest.*
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxHttpClient
@@ -17,7 +14,6 @@ import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.test.annotation.MicronautTest
 import url.shortener.domain.UrlMap
-import url.shortener.domain.Visit
 
 @MicronautTest
 class UrlControllerTest : StringSpec() {
@@ -70,6 +66,20 @@ class UrlControllerTest : StringSpec() {
             actual.fullUrl shouldBe "https://democracynow.org"
             actual.urlCode shouldBe "ab3950a"
             actual.userId shouldNotBe "test"
+        }
+
+        "should delete url mapping if url code exists" {
+            val request = DELETE<Any>("/dm40s9m")
+
+            val actual = client.toBlocking().exchange(request, HttpStatus::class.java)
+            actual.status() shouldBe HttpStatus.NO_CONTENT
+        }
+
+        "should return not found if url code doesn't exist when deleting" {
+            val request = DELETE<Any>("/does_not_exist")
+            val e = shouldThrow<HttpClientResponseException> { client.toBlocking().exchange<Any, Any>(request) }
+
+            e.status shouldBe HttpStatus.NOT_FOUND
         }
     }
 }

@@ -71,7 +71,19 @@ class UrlController(private val urlMapRepository: UrlMapRepository,
         }
     }
 
+    @Delete("/{urlCode}")
+    fun deleteUrlMapping(@PathVariable urlCode: String): MutableHttpResponse<HttpStatus> {
+        val possibleUrlMapping = urlMapRepository.findByUrlCode(urlCode)
 
+        return if (possibleUrlMapping.isPresent) {
+
+            urlMapRepository.delete(possibleUrlMapping.get())
+            HttpResponse.noContent()
+        } else {
+
+            HttpResponse.notFound()
+        }
+    }
 }
 
 data class UrlRequest(val fullUrl: String, val userId: String) {
