@@ -1,9 +1,6 @@
 package url.shortener
 
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.HttpResponse
-import io.micronaut.http.HttpStatus
-import io.micronaut.http.MutableHttpResponse
+import io.micronaut.http.*
 import io.micronaut.http.annotation.*
 import io.micronaut.http.server.HttpServerConfiguration
 import io.micronaut.http.server.util.DefaultHttpClientAddressResolver
@@ -42,26 +39,10 @@ class UrlController(private val urlMapRepository: UrlMapRepository,
 
     @Get("visits/{urlCode}")
     fun getVisitsByUrlCode(@PathVariable urlCode: String): MutableHttpResponse<Set<Visit>> {
-        //TODO: Determine if a small return dataset makes sense
         val possibleUrlMap = urlMapRepository.findByUrlCode(urlCode)
 
         return if (possibleUrlMap.isPresent) {
 
-            val visits = visitRepository.findByUrlCode(urlCode)
-            HttpResponse.ok(visits)
-        } else {
-
-            HttpResponse.notFound()
-        }
-    }
-
-    @Get("stats/{urlCode}")
-    fun getStatsForUrlCode(@PathVariable urlCode: String): MutableHttpResponse<Set<Visit>>? {
-        val possibleUrlMap = urlMapRepository.findByUrlCode(urlCode)
-
-        return if (possibleUrlMap.isPresent) {
-
-            val urlMap = possibleUrlMap.get()
             val visits = visitRepository.findByUrlCode(urlCode)
             HttpResponse.ok(visits)
         } else {
@@ -71,33 +52,34 @@ class UrlController(private val urlMapRepository: UrlMapRepository,
     }
 
     @Post
+    @Consumes(MediaType.APPLICATION_JSON)
     @Status(HttpStatus.CREATED)
     fun addUrlMapping(@Body urlRequest: UrlRequest): UrlMap {
-        val result = urlMapRepository.findByUrlCode(urlRequest.urlCode)
+        val possibleUrlMapping = urlMapRepository.findByFullUrl(urlRequest.fullUrl)
 
-        return if (result.isPresent) {
+        return if (possibleUrlMapping.isPresent) {
 
-            result.get()
+            possibleUrlMapping.get()
         } else {
-            val id = UrlRequest.generateSemiUniqueId() //TODO: Rename
-            val entry = UrlMap(urlCode = id, fullUrl = urlRequest.urlCode, userId = urlRequest.userId)
-            urlMapRepository.save(entry)
 
-            entry
+            val urlCode = UrlRequest.generateUrlCode()
+            //TODO: add check to see if url code already exists and recreate if already there
+            val record = UrlMap(urlCode = urlCode, fullUrl = urlRequest.fullUrl, userId = urlRequest.userId)
+            urlMapRepository.save(record)
+
+            record
         }
     }
 
 
 }
 
-//data class UrlStatResponse(val urlMap: UrlMap, val visits: List<Visit>?)
-
-data class UrlRequest(val urlCode: String, val userId: String) {
+data class UrlRequest(val fullUrl: String, val userId: String) {
 
     companion object {
         private val charPool: List<Char> = ('a'..'z') + ('0'..'9')
 
-        fun generateSemiUniqueId(): String {
+        fun generateUrlCode(): String {
             val randomString = (1..8)
                     .map { _ -> Random.nextInt(0, charPool.size) }
                     .map(charPool::get)

@@ -3,16 +3,20 @@ package io.kotlintest.provided
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 import io.micronaut.context.ApplicationContext
 import io.micronaut.http.HttpRequest.GET
+import io.micronaut.http.HttpRequest.POST
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.test.annotation.MicronautTest
+import url.shortener.domain.UrlMap
 import url.shortener.domain.Visit
 
 @MicronautTest
@@ -47,6 +51,25 @@ class UrlControllerTest : StringSpec() {
             val actual = client.toBlocking().retrieve("/visits/ab3950a", Set::class.java)
 
             actual.size shouldBeGreaterThan 3
+        }
+
+        "should add url mapping when url code does not exist" {
+            val request = POST("/", "{ \"fullUrl\": \"https://sailormoon.fandom.com/wiki/Sailor_Moon_Wiki\"," +
+                    "\"userId\" : \"test\" }")
+
+            val actual = client.toBlocking().retrieve(request, UrlMap::class.java)
+            actual.fullUrl shouldBe "https://sailormoon.fandom.com/wiki/Sailor_Moon_Wiki"
+            actual.userId shouldBe "test"
+        }
+
+        "should not create new url mapping if full url already exists" {
+            val request = POST("/", "{ \"fullUrl\": \"https://democracynow.org\"," +
+                    "\"userId\" : \"test\" }")
+
+            val actual = client.toBlocking().retrieve(request, UrlMap::class.java)
+            actual.fullUrl shouldBe "https://democracynow.org"
+            actual.urlCode shouldBe "ab3950a"
+            actual.userId shouldNotBe "test"
         }
     }
 }
