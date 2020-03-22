@@ -1,0 +1,31 @@
+#Url code permanent redirect to configured url
+GET http://localhost:8080/ab3950a
+
+###
+
+#View visits by url code
+GET http://localhost:8080/visits/ab3950a
+Accept: application/json
+
+###
+
+#Create mapping for url
+POST http://localhost:8080/
+Content-Type: application/json
+
+{
+  "fullUrl": "https://www.cnnmoney.com",
+  "userId" : "outzider"
+}
+
+###
+
+#Delete mapping for url
+DELETE http://localhost:8080/dm40s9m
+
+###
+
+#Url code permanent redirect to configured url
+GET http://localhost:8080/dm40s9m
+
+###

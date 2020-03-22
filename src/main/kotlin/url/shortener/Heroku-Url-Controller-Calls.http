@@ -1,0 +1,31 @@
+#Url code permanent redirect to configured url
+GET https://shielded-coast-60226.herokuapp.com/ab3950a
+
+###
+
+#View visits by url code
+GET https://shielded-coast-60226.herokuapp.com/visits/ab3950a
+Accept: application/json
+
+###
+
+#Create mapping for url
+POST https://shielded-coast-60226.herokuapp.com/
+Content-Type: application/json
+
+{
+  "fullUrl": "https://www.cnnmoney.com",
+  "userId" : "outzider"
+}
+
+###
+
+#Delete mapping for url
+DELETE https://shielded-coast-60226.herokuapp.com/dm40s9m
+
+###
+
+#Url code permanent redirect to configured url
+GET https://shielded-coast-60226.herokuapp.com/dm40s9m
+
+###
