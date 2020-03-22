@@ -84,6 +84,13 @@ class UrlController(private val urlMapRepository: UrlMapRepository,
             HttpResponse.notFound()
         }
     }
+
+    @Get("/mappings/{userId}")
+    fun getMappingsByUserId(@PathVariable userId: String): MutableHttpResponse<Set<UrlMap>> {
+        val urlMappings = urlMapRepository.findByUserId(userId)
+
+        return HttpResponse.ok(urlMappings)
+    }
 }
 
 data class UrlRequest(val fullUrl: String, val userId: String) {

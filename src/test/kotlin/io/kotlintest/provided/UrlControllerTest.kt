@@ -1,6 +1,7 @@
 package io.kotlintest.provided
 
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
+import io.kotlintest.matchers.numerics.shouldBeGreaterThanOrEqual
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
@@ -80,6 +81,12 @@ class UrlControllerTest : StringSpec() {
             val e = shouldThrow<HttpClientResponseException> { client.toBlocking().exchange<Any, Any>(request) }
 
             e.status shouldBe HttpStatus.NOT_FOUND
+        }
+
+        "should return url mappings by user" {
+            val actual = client.toBlocking().retrieve("/mappings/test", Set::class.java)
+
+            actual.size shouldBeGreaterThanOrEqual 1
         }
     }
 }

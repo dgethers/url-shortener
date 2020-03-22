@@ -11,4 +11,5 @@ interface UrlMapRepository : CrudRepository<UrlMap, Long> {
     fun findByUrlCode(urlCode: String): Optional<UrlMap>
     fun findByFullUrl(fullUrl: String): Optional<UrlMap>
     fun findFullUrlByUrlCode(urlCode: String): Optional<String>
+    fun findByUserId(userId: String): Set<UrlMap>
 }

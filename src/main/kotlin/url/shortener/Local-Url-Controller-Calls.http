@@ -29,3 +29,8 @@ DELETE http://localhost:8080/dm40s9m
 GET http://localhost:8080/dm40s9m
 
 ###
+
+#View url mappings by user id
+GET http://localhost:8080/mappings/system
+
+###

@@ -29,3 +29,7 @@ DELETE https://shielded-coast-60226.herokuapp.com/dm40s9m
 GET https://shielded-coast-60226.herokuapp.com/dm40s9m
 
 ###
+#View url mappings by user id
+GET https://shielded-coast-60226.herokuapp.com/mappings/system
+
+###
