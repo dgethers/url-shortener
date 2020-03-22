@@ -23,13 +23,13 @@ class VisitRepositoryTest : StringSpec() {
 
             visitRepository.saveAll(uniqueVisits)
 
-            val actual = visitRepository.findByUrlCode("dm40s9m")
+            val actual = visitRepository.findByUrlCodeOrderByIdDesc("dm40s9m")
 
             actual shouldContainExactlyInAnyOrder uniqueVisits
         }
 
         "should return an empty set when url code does not exist" {
-            val actual = visitRepository.findByUrlCode("none")
+            val actual = visitRepository.findByUrlCodeOrderByIdDesc("none")
 
             actual.size shouldBe 0
         }

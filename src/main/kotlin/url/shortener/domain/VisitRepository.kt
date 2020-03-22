@@ -7,5 +7,5 @@ import io.micronaut.data.repository.CrudRepository
 @JdbcRepository(dialect = Dialect.H2)
 interface VisitRepository : CrudRepository<Visit, Long> {
 
-    fun findByUrlCode(urlCode: String): Set<Visit>
+    fun findByUrlCodeOrderByIdDesc(urlCode: String): Set<Visit>
 }

@@ -43,7 +43,7 @@ class UrlController(private val urlMapRepository: UrlMapRepository,
 
         return if (possibleUrlMap.isPresent) {
 
-            val visits = visitRepository.findByUrlCode(urlCode)
+            val visits = visitRepository.findByUrlCodeOrderByIdDesc(urlCode)
             HttpResponse.ok(visits)
         } else {
 
