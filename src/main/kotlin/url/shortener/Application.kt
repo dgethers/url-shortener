@@ -19,9 +19,10 @@ class Application(
     @EventListener
     fun init(event: StartupEvent) {
         val defaultSiteVisits = setOf(
-                Visit(clientBrowser = "Brave", ipAddress = "127.0.0.1", urlCode = "ab3950a"),
-                Visit(clientBrowser = "Chrome", ipAddress = "127.0.0.1", urlCode = "ab3950a"),
-                Visit(clientBrowser = "Safari", ipAddress = "127.0.0.1", urlCode = "ab3950a")
+                Visit(clientBrowser = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36", ipAddress = "127.0.0.1", urlCode = "ab3950a"),
+                Visit(clientBrowser = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36", ipAddress = "127.0.0.1", urlCode = "ab3950a"),
+                Visit(clientBrowser = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0", ipAddress = "127.0.0.1", urlCode = "ab3950a"),
+                Visit(clientBrowser = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1", ipAddress = "127.0.0.1", urlCode = "ab3950a")
         )
         val defaultUrlMappings = listOf(
                 UrlMap(urlCode = "ab3950a", fullUrl = "https://democracynow.org", userId = "system"),
