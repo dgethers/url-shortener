@@ -19,7 +19,6 @@ Body:
     "fullUrl" : "http://www.something.com",
     "userId" : "your_alias"   
 }`
-
 Response:
 `{
     "id" : "system_generated_id",
@@ -31,8 +30,7 @@ Response:
 
 * `DELETE` /{urlCode} - **Delete url mapping**
 
-* `GET` /mappings/{userId} = **Get all url mappings by user id**
-
+* `GET` /mappings/{userId} = **Get all url mappings by user id**\
 Response:
 `[
     {
